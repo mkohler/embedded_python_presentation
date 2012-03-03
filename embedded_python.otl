@@ -5,6 +5,8 @@ Act 1: Set up the Story
 	The Setting
 	: Decreasing hardware costs mean that you can build embedded systems with
 	: Linux and Python instead of an real-time operating system and C.
+		PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
+		RAM (Raspberry Pi slide)
 	The Protagonist
 	: Embedded programmers face a lot of choices.
 	The Imbalance
@@ -22,27 +24,52 @@ Act 2: Develop the action
 		The Linux Distribution Ecosystem
 			big (kiosk) Ubuntu
 			medium Debian
-			small Linux from Scratch
-				
+				: Debian official ports
+				:	amd64
+				:	armel - little-endian ARM
+				:	i386
+				:	ia64o
+				:	mips
+				:	mipsel
+				:	powerpc
+				:	s390
+				:	sparc
+				:	small Linux from Scratch
 		binary vs. source
-			
 			continuum: Ubuntu -- Debian -- LinuxFromScratch
+			LinuxFromScratch
+				cross-compilation, gcc toolchain, unusual platforms
 			Debian doesn't support downgrades
 				Debian is more granular and more complete than Fedora / RedHat
 		custom kernels
 		network configuration
 			NetworkManager
+			: Watch out for NetworkManager. Embedded systems are often
+			: not laptops.
 			WiFi
-
-
+		storage and backups
 	Pick the right components.
 		Plan for upgrades.
+			: Storage drives your decisions
+			:
+			: upgrades: images vs packages vs deployment
+			: Leave hooks, controlled by new software.
+			: Or better yet, make the new software in charge of upgrades.
+			: Worst: Don't allow the upgrade infrastructure to be upgradable.
+			: Note: ubuntu's updater gets updated often.
 			packaging systems
+				Advantages
+					already done
+				Disadvantages
+					designed for end-user systems
+					On embedded system, changing stuff in /etc is normal.
+					Not for debian.
 			filesystem images
+			: how big is your partition?
 			custom (tarballs)
 			The new software must be in control.
 		Choose UI libs carefully.
-			native UIs
+			native UIs (Qt)
 			web UI
 			native, web, UI
 			kiosk model
@@ -53,13 +80,24 @@ Act 2: Develop the action
 			: swig
 			: import multiprocessing
 			: pipes
+			: C extensions
 		Time
-			time zones
-			setting the time
-			a story
-				RTC, system clock
-			
-
+			: time zones
+			: setting the time
+			: time is a bitch
+			: story: Ubuntu automatically sets the time when you plug
+			: in a network cable.
+			:    CMOS time was not getting set.
+			:
+			:    result: huge time adjustments whenever you plugged in a
+			:    network cable.
+			:
+			:    Conclusion: Avoid time, if possible.
+			:
+			:    Huge number of time zones.
+			:    Don't do timezones. Wristwatches don't.
+			:			a story
+			:				RTC, system clock
 	Write portable code
 		Inheritance.
 		Types of portability
@@ -71,8 +109,13 @@ Act 2: Develop the action
 		
 		Use abstraction layers.
 		Invert the logic
+        : Ports should depend on common code 
 		: Don't have lots of conditionals in the leaves of your code.
 		: Keep the leaves simple.
+        : The obvious thing
+		: if PRODUCT do this
+		: elif PRODUCT2 do that
+		: elif PRODUCT2B do that
 		Leave hooks.
 
 		Tarpits!
@@ -89,151 +132,13 @@ Act 3: Frame the Resolution
 	The resolution
 
 
-Other Stuff:
-Story ideas
-
-    PIC processors
-        MIPS 4K
-
-    5MB for Python interpreter
-
-    Old wayj
-
-    Storage drives your decisions
-
-    memory is important too.
-
-    Memory drives interface decisions
-
-    cost of product: $2000+
-
-        Analogy ie advntage of PC hardware it makes a huge difference
-
-        Nowadays that includes mobile phone hardware.
-
-
-        PC hardware price
-            when you can tak
-    Debian vs Fedora vs source distributions vs building your own (5 minutes)
-
-
-    
-        Debian/Ubuntu and Fedora
-
-        Debian official ports
-            amd64
-            armel - little-endian ARM
-            i386
-            ia64o
-            mips
-            mipsel
-            powerpc
-            s390
-            sparc
-
-
-        Fedora - mostly x86 and x86-64
-            also arm ,mips, parisc, powerpc, s390x, sparc
-                
-            
-            binary - fast
-            for your platform?
-
-            Debian package are much smaller
-            BSD
-
-        Rolling your own
-            cross-compilation environment
-            .udeb
-            core libs
-
-
-    Different from the Desktop (10 minutes)
-        user interfaces: toolkits vs. browsers
-            Chrome kiosk mode, Firefox add-on
-            Qt
-        setting the time
-            time is a bitch
-                story: Ubuntu automatically sets the time when you plug
-                in a network cable.
-
-                CMOS time was not getting set.
-
-                result: huge time adjustments whenever you plugged in a
-                network cable.
-
-                Conclusion: Avoid time, if possible.
-
-                Huge number of time zones.
-                Don't do timezones. Wristwatches don't.
-                    
-        network
-            Watch out for NetworkManager. Embedded systems are often
-            not laptops.
-        storage and backups
-        upgrades: images vs packages vs deployment
-            Debian doesn't downgrade.
-            Leave hooks, controlled by new software.
-            Or better yet, make the new software in charge of upgrades.
-            Worst: Don't allow the upgrade infrastructure to be upgradable.
-
-            Note: ubuntu's updater gets updated often.
-    Portability, or ifdefs are Harmful in Python too (5 minutes)
-        The obvious thing
-
-            if blah blah
-                if blah if blah
-
-                        if PRODUCT do this
-                        elif PRODUCT2 do that
-                        etc
-
-        Ports should depend on common code 
-
-        Frameworks vs. libraries
-
-
-
-    Not Python: C extensions, Swig, and import subprocess (5 minutes)
-
-        root or not root
-        sudo
-
-
-  C                     Python
-  make, autotools, gcc          setup.py, distutils, setuptools
-
-    Summary (2 minutes)
-
-
-    gcc toolchain
-
-
-Upgrades
-    packages
-        Advantages
-            already done
-        Disadvantages
-            designed for end-user systems
-            On embedded system, changing stuff in /etc is normal.
-            Not for debian.
-    partition at a time
-        how big is your partition?
-
-
-
-    Platform
-        ARM x86-32 x86-64
-
-Background
-	old way C and RTOS
-	new way
-Linux and Python
-cost dev tools, licenses
-
-
-
-
+Good, but where?
+	root or not root
+		sudo
 Trash
-	Move from VxWorks/C to Linux/Python
+	Background
+		old way C and RTOS
+			cost dev tools, licenses
+		new way Linux and Python
+		Move from VxWorks/C to Linux/Python
 	Make it a screencast.
