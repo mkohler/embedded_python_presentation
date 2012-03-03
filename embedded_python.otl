@@ -3,10 +3,11 @@ Designing Embedded Linux Systems with Python by Mark Kohler
 
 Act 1: Set up the Story
 	Setting: Hardware is cheap. RAM is abundant.
-	: slide ideas:
 	: PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
 	: RAM (Raspberry Pi slide)
 	Protagonist: Programmers develop faster with Linux and Python than VxWorks and C.
+	: VxWorks stack trace, 
+	: cost dev tools, licenses
 	Imbalance: Linux distributions are not designed for embedded systems.
 	Balance: Develop in Python and create flexible software.
 	Solution: Use what you can and use Python to quickly build the rest.
@@ -47,7 +48,7 @@ Act 2: Develop the action - How and Why?
 			: touchscreen
 			: Chrome and Firefox have kiosk modes.
 		storage and backups
-	Avoid desktop assumptions.
+	Avoid components that assume the desktop.
 		Use external components
 			: subprocess
 			: swig
@@ -71,6 +72,8 @@ Act 2: Develop the action - How and Why?
 			:    Don't do timezones. Wristwatches don't.
 						a story
 							RTC, system clock
+		root or not root
+			: sudo
 	Write portable code.
 		Plan for upgrades.
 			
@@ -112,19 +115,7 @@ Act 2: Develop the action - How and Why?
 			time
 			network configuration
 Act 3: Frame the Resolution
-	The crisis
-	: Complexity overload
-	The solution
-	: Plan carefully.
-	The climax
-	The resolution
-Good, but where?
-	root or not root
-		sudo
-Trash
-	Background
-		old way C and RTOS
-			cost dev tools, licenses
-		new way Linux and Python
-		Move from VxWorks/C to Linux/Python
-	Make it a screencast.
+	Crisis: Complexity overload
+	Solution: Plan carefully.
+	Climax:
+	Resolution:
