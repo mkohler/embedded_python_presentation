@@ -9,10 +9,10 @@ Act 1: Set up the Story
 	Protagonist: Programmers develop faster with Linux and Python than VxWorks and C.
 	Imbalance: Linux distributions are not designed for embedded systems.
 	Balance: Develop in Python and create flexible software.
-	Solution: Understand the differences between apps and embedded systems.
+	Solution: Use what you can and use Python to quickly build the rest.
 Act 2: Develop the action - How and Why?
-	Choose the best distribution for your product.
-		: CPU archicture and storage drives your decisions
+	Choose the right distribution.
+		: CPU architecture and storage drives your decisions
 		The Linux Distribution Ecosystem
 			big (kiosk) Ubuntu
 			medium Debian
@@ -39,26 +39,6 @@ Act 2: Develop the action - How and Why?
 			: Watch out for NetworkManager. Embedded systems are often
 			: not laptops.
 			WiFi
-		storage and backups
-	Pick the right components.
-		Plan for upgrades.
-			
-			: upgrades: images vs packages vs deployment
-			: Leave hooks, controlled by new software.
-			: Or better yet, make the new software in charge of upgrades.
-			: Worst: Don't allow the upgrade infrastructure to be upgradable.
-			: Note: ubuntu's updater gets updated often.
-			packaging systems
-				Advantages
-					already done
-				Disadvantages
-					designed for end-user systems
-					On embedded system, changing stuff in /etc is normal.
-					Not for debian.
-			filesystem images
-			: how big is your partition?
-			custom (tarballs)
-			The new software must be in control.
 		Choose UI libs carefully.
 			native UIs (Qt)
 			web UI
@@ -66,6 +46,8 @@ Act 2: Develop the action - How and Why?
 			kiosk model
 			: touchscreen
 			: Chrome and Firefox have kiosk modes.
+		storage and backups
+	Avoid desktop assumptions.
 		Use external components
 			: subprocess
 			: swig
@@ -89,7 +71,25 @@ Act 2: Develop the action - How and Why?
 			:    Don't do timezones. Wristwatches don't.
 						a story
 							RTC, system clock
-	Write portable code
+	Write portable code.
+		Plan for upgrades.
+			
+			: upgrades: images vs packages vs deployment
+			: Leave hooks, controlled by new software.
+			: Or better yet, make the new software in charge of upgrades.
+			: Worst: Don't allow the upgrade infrastructure to be upgradable.
+			: Note: ubuntu's updater gets updated often.
+			packaging systems
+				Advantages
+					already done
+				Disadvantages
+					designed for end-user systems
+					On embedded system, changing stuff in /etc is normal.
+					Not for debian.
+			filesystem images
+			: how big is your partition?
+			custom (tarballs)
+			The new software must be in control.
 		Inheritance.
 		Types of portability
 			: use the car analogy.
