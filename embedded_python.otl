@@ -2,39 +2,31 @@
 Designing Embedded Linux Systems with Python by Mark Kohler
 
 Act 1: Set up the Story
-	The Setting
-	: Decreasing hardware costs mean that you can build embedded systems with
-	: Linux and Python instead of an real-time operating system and C.
-		PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
-		RAM (Raspberry Pi slide)
-	The Protagonist
-	: Embedded programmers face a lot of choices.
-	The Imbalance
-	: Poor choices extend development time.
-	The Balance
-	: Choosing wisely maes development easy.
-	The Solution
-	: Understand the differences between apps and embedded systems.
-	
-Act 2: Develop the action
-	: How?
-	:		How?
-	:				Why?
-	Pick the right distribution.
+	Setting: Hardware is cheap. RAM is abundant.
+	: slide ideas:
+	: PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
+	: RAM (Raspberry Pi slide)
+	Protagonist: Programmers develop faster with Linux and Python than VxWorks and C.
+	Imbalance: Linux distributions are not designed for embedded systems.
+	Balance: Develop in Python and create flexible software.
+	Solution: Understand the differences between apps and embedded systems.
+Act 2: Develop the action - How and Why?
+	Choose the best distribution for your product.
+		: CPU archicture and storage drives your decisions
 		The Linux Distribution Ecosystem
 			big (kiosk) Ubuntu
 			medium Debian
 				: Debian official ports
-				:	amd64
-				:	armel - little-endian ARM
-				:	i386
-				:	ia64o
-				:	mips
-				:	mipsel
-				:	powerpc
-				:	s390
-				:	sparc
-				:	small Linux from Scratch
+					amd64
+					armel - little-endian ARM
+					i386
+					ia64o
+					mips
+					mipsel
+					powerpc
+					s390
+					sparc
+					small Linux from Scratch
 		binary vs. source
 			continuum: Ubuntu -- Debian -- LinuxFromScratch
 			LinuxFromScratch
@@ -50,8 +42,7 @@ Act 2: Develop the action
 		storage and backups
 	Pick the right components.
 		Plan for upgrades.
-			: Storage drives your decisions
-			:
+			
 			: upgrades: images vs packages vs deployment
 			: Leave hooks, controlled by new software.
 			: Or better yet, make the new software in charge of upgrades.
@@ -88,16 +79,16 @@ Act 2: Develop the action
 			: story: Ubuntu automatically sets the time when you plug
 			: in a network cable.
 			:    CMOS time was not getting set.
-			:
+			
 			:    result: huge time adjustments whenever you plugged in a
 			:    network cable.
-			:
+			
 			:    Conclusion: Avoid time, if possible.
-			:
+			
 			:    Huge number of time zones.
 			:    Don't do timezones. Wristwatches don't.
-			:			a story
-			:				RTC, system clock
+						a story
+							RTC, system clock
 	Write portable code
 		Inheritance.
 		Types of portability
@@ -106,23 +97,20 @@ Act 2: Develop the action
 			hardware architecture
 			product varieties
 		: the problem: See ifdefs considered harmful
-		
 		Use abstraction layers.
 		Invert the logic
-        : Ports should depend on common code 
+		: Ports should depend on common code 
 		: Don't have lots of conditionals in the leaves of your code.
 		: Keep the leaves simple.
-        : The obvious thing
+		: The obvious thing
 		: if PRODUCT do this
 		: elif PRODUCT2 do that
 		: elif PRODUCT2B do that
-		Leave hooks.
-
+		: Leave hooks.
 		Tarpits!
 			upgrades
 			time
 			network configuration
-
 Act 3: Frame the Resolution
 	The crisis
 	: Complexity overload
@@ -130,8 +118,6 @@ Act 3: Frame the Resolution
 	: Plan carefully.
 	The climax
 	The resolution
-
-
 Good, but where?
 	root or not root
 		sudo
