@@ -18,72 +18,68 @@ Act 2: Develop the action - How and Why?
 		: Storage: 15GB
 		: Packages more complete than Fedora / RedHat
 		: Chrome and Firefox have kiosk modes.
+		: Using Ubuntu can be the quickest path to a working kiosk.
+		: on ragged edge for support libraries
 		Choose Debian for an appliance.
 		: CPU: amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
 		: Storage: 1GB
+		: some support for cross-compilation with emdebian project.
 		For a thermostat, start with BusyBox and Linux from Scratch.
 		: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
 		: Packages more granular than Fedora / RedHat
 		: cross-compilation, gcc toolchain, unusual platforms, custom kernels
 		: You are doing platform development.
 	Eliminate desktop assumptions.
-		Plan for upgrades.
-			python-apt
+		: For Ubuntu and Debian.
+		Handle upgrades automatically.		
+			: Upgrading software should control the process.
+			Simplest approach Using filesystem images or tarballs
+			: Ideal for small systems that run out of RAM.
+			: Ping-pong approach can also work.
+			: Problem for large systems.
+			Using apt
+			: python-apt supports custom interfaces.
 			: Debian doesn't support downgrades
-			
-			: upgrades: images vs packages vs deployment
-			: Leave hooks, controlled by new software.
-			: Or better yet, make the new software in charge of upgrades.
-			: Worst: Don't allow the upgrade infrastructure to be upgradable.
-			: Note: ubuntu's updater gets updated often.
-			packaging systems
-				Advantages
-					already done
-				Disadvantages
-					designed for end-user systems
-					On embedded system, changing stuff in /etc is normal.
-					Not for debian.
-			filesystem images
-			: how big is your partition?
-			custom (tarballs)
-			The new software must be in control.
-		Time
-			: time zones
+			: /etc is a problem.
+			: Watch out for debconf questions.
+		Be wary of time-related code.
+			: Time
+			: Avoid time zones, if possibles. Wristwatches do.
 			: setting the time
 			: time is a bitch
 			: story: Ubuntu automatically sets the time when you plug
 			: in a network cable.
 			:    CMOS time was not getting set.
-			
 			:    result: huge time adjustments whenever you plugged in a
 			:    network cable.
-			
 			:    Conclusion: Avoid time, if possible.
-			
 			:    Huge number of time zones.
 			:    Don't do timezones. Wristwatches don't.
-						a story
-							RTC, system clock
 		Root is okay.
-			: sudo is okay too.
+			: **** need why or why not
+			: sudo is okay too. write privileged programs in python
 		Don't manage NetworkManager.
 			: Configure networks like servers, not clients.	
 	Write portable code.
-		Use external components
-			: subprocess
-			: swig
-			: import multiprocessing
-			: pipes
-			: C extensions
-		Inheritance.
+		What is portable code?
+		: There is more than one type of portability.
+		:
+		: 
+			luxury edition
 		Types of portability
 			: use the car analogy.
 			CPU architecture
 			hardware architecture
 			product varieties
 		: the problem: See ifdefs considered harmful
-		Use abstraction layers.
-		Invert the logic
+		Inheritance.
+		Use abstraction.
+		Use composition instead of inheritance
+		Fisrt separate common and model-specific code.
+		Who likes frameworks?
+		Who prefers libraries?
+		similar to switching from framework to library.
+		Don't depend on details. Depend on commonalities.
 		: Ports should depend on common code 
 		: Don't have lots of conditionals in the leaves of your code.
 		: Keep the leaves simple.
@@ -91,13 +87,15 @@ Act 2: Develop the action - How and Why?
 		: if PRODUCT do this
 		: elif PRODUCT2 do that
 		: elif PRODUCT2B do that
-		: Leave hooks.
-		Tarpits!
-			upgrades
-			time
-			network configuration
+		Use external components
+			: subprocess
+			: swig
+			: import multiprocessing
+			: pipes
+			: C extensions
+			: Zero
 Act 3: Frame the Resolution
 	Crisis: Complexity overload
 	Solution: Plan carefully.
 	Climax:
-	Resolution:
+	Resolution: Create embedded systems. Use Linux. Use Python.
