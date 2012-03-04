@@ -100,10 +100,15 @@ Act 2: Develop the action - How and Why?
 			: Configure networks like servers, not clients.	
 	Write portable code.
 		: We talked about Linux. Now we can talk about Python.
+		:
+		: And I want to talk about a particular aspect of program design that
+		: is especially important to embedded systems software.
+		:
 		: I want everyone to write portable code in Python.
 		What is portable code? Isn't Python portable?
-		: I don't have an endian macros in my Python code.
-		: I don't have near and far pointers.
+		: I've never seen endian macros in Python code.
+		: I haven't seen near and far pointers.
+		: I haven't seen 36-bit words.
 		:
 		: Yes, Python is portable across *processors*.
 		: There is more than one type of portability.
@@ -125,8 +130,10 @@ Act 2: Develop the action - How and Why?
 			; if PRODUCT_A do this
 			; elif PRODUCT_B do that
 			; elif PRODUCT_C do something else
-			So what's the problem?
+			That works. So what's the problem?
 				: The problem is the number of code paths increases with each product.	
+				:
+				: The complexity increases.
 				:
 				: And when you're working on the software, regardless of which
 				: product you are working on, you see the complexity of the sum
@@ -135,12 +142,25 @@ Act 2: Develop the action - How and Why?
 				: Another problem is that the differences between products are
 				: hidden in the leaves of your code.
 				:
+				: Stop and talk about trunk vs. leaves.
+				:
+				: By that, I mean, 
+				:
+				: If any of you have programmed in C, C has two different
+				: kinds of if statements: the kind that evaluate at compile-time
+				: and the kind that evaluate at run-time.
+				: 
 				: See #ifdef Considered Harmful by Henry Spencer
 				:
 				Is a program written this way modular? Let's come back to that.
-		Stop and talk about trunk vs. leaves.
 			Separate common and model-specific code.
-			: Use abstraction. Draw a circle around the leaves.
+			: So we're using this "if" statement, and we're starting to
+			: feel like we're losing.
+			:
+			: We'd really like to be able to work on the core code, without
+			: seeing the complexity of all of the product varieties.
+			:
+			: I can use abstraction. Draw a circle around the leaves.
 			: This is Better
 			: But let's ask again, is this program modular?
 			:
@@ -158,30 +178,35 @@ Act 2: Develop the action - How and Why?
 			: Each module is then designed to hide such a decision from the
 			: others."
 			:
+			: In our program, what are we hiding?
+			:
+			: We are hiding the model-specific code from the core code, and
+			: that's code. But the model-specific code is all mixed together.
+			:
 			: We want to *hide* the differences, the parts of the program that
 			: have changed before, and thus are likely to change again, from
 			: the other parts of the software.
+			:
+			: Another problem. We have these interfaces between the core code
+			: and the model-specific code. Are they stable? By that, I mean,
+			: do they remain the same over time? Or do we need to
+			: change them every time we add a new model?
 
 		Question for the audience: Who likes frameworks? Who prefers libraries?
 
 		Best
+			There is a solution. Turn the call-graph inside out.
+			: Differences are often in setup and teardown. So let the
+			: model-specific code call the common code.
 			Don't depend on details. Depend on commonalities.
 			: Ports should depend on common code 
 			: Don't have lots of conditionals in the leaves of your code.
 			: Keep the leaves simple.
 			: The obvious thing
-			Turn the call-graph inside out.
-
+			Explain why it is better:
+				Details of strange hardware are hidden.
 			Better for testing.
-		Inheritance.
-		Use composition instead of inheritance
-		Use external components
-			: subprocess
-			: swig
-			: import multiprocessing
-			: pipes
-			: C extensions
-			: Zero
+				Differences between hardware are easy to see.
 Act 3: Frame the Resolution
 	Crisis: Complexity overload
 	Solution: Plan carefully.
