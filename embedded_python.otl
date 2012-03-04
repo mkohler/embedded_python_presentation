@@ -13,69 +13,23 @@ Act 1: Set up the Story
 	Solution: Use what you can and use Python to quickly build the rest.
 Act 2: Develop the action - How and Why?
 	Choose the right distribution.
-		: CPU architecture and storage drives your decisions
-		The Linux Distribution Ecosystem
-			big (kiosk) Ubuntu
-			medium Debian
-				: Debian official ports
-					amd64
-					armel - little-endian ARM
-					i386
-					ia64o
-					mips
-					mipsel
-					powerpc
-					s390
-					sparc
-					small Linux from Scratch
-		binary vs. source
-			continuum: Ubuntu -- Debian -- LinuxFromScratch
-			LinuxFromScratch
-				cross-compilation, gcc toolchain, unusual platforms
-			Debian doesn't support downgrades
-				Debian is more granular and more complete than Fedora / RedHat
-		custom kernels
-		network configuration
-			NetworkManager
-			: Watch out for NetworkManager. Embedded systems are often
-			: not laptops.
-			WiFi
-		Choose UI libs carefully.
-			native UIs (Qt)
-			web UI
-			native, web, UI
-			kiosk model
-			: touchscreen
-			: Chrome and Firefox have kiosk modes.
-		storage and backups
-	Avoid components that assume the desktop.
-		Use external components
-			: subprocess
-			: swig
-			: import multiprocessing
-			: pipes
-			: C extensions
-		Time
-			: time zones
-			: setting the time
-			: time is a bitch
-			: story: Ubuntu automatically sets the time when you plug
-			: in a network cable.
-			:    CMOS time was not getting set.
-			
-			:    result: huge time adjustments whenever you plugged in a
-			:    network cable.
-			
-			:    Conclusion: Avoid time, if possible.
-			
-			:    Huge number of time zones.
-			:    Don't do timezones. Wristwatches don't.
-						a story
-							RTC, system clock
-		root or not root
-			: sudo
-	Write portable code.
+		Choose Ubuntu for a kiosk.
+		: CPU: amd64, i386, arm
+		: Storage: 15GB
+		: Packages more complete than Fedora / RedHat
+		: Chrome and Firefox have kiosk modes.
+		Choose Debian for an appliance.
+		: CPU: amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
+		: Storage: 1GB
+		For a thermostat, start with BusyBox and Linux from Scratch.
+		: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
+		: Packages more granular than Fedora / RedHat
+		: cross-compilation, gcc toolchain, unusual platforms, custom kernels
+		: You are doing platform development.
+	Eliminate desktop assumptions.
 		Plan for upgrades.
+			python-apt
+			: Debian doesn't support downgrades
 			
 			: upgrades: images vs packages vs deployment
 			: Leave hooks, controlled by new software.
@@ -93,6 +47,34 @@ Act 2: Develop the action - How and Why?
 			: how big is your partition?
 			custom (tarballs)
 			The new software must be in control.
+		Time
+			: time zones
+			: setting the time
+			: time is a bitch
+			: story: Ubuntu automatically sets the time when you plug
+			: in a network cable.
+			:    CMOS time was not getting set.
+			
+			:    result: huge time adjustments whenever you plugged in a
+			:    network cable.
+			
+			:    Conclusion: Avoid time, if possible.
+			
+			:    Huge number of time zones.
+			:    Don't do timezones. Wristwatches don't.
+						a story
+							RTC, system clock
+		Root is okay.
+			: sudo is okay too.
+		Don't manage NetworkManager.
+			: Configure networks like servers, not clients.	
+	Write portable code.
+		Use external components
+			: subprocess
+			: swig
+			: import multiprocessing
+			: pipes
+			: C extensions
 		Inheritance.
 		Types of portability
 			: use the car analogy.
