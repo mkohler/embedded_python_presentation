@@ -3,25 +3,21 @@ Designing Embedded Linux Systems for Python Programmers
 by Mark Kohler
 
 Act 1: Set up the Story
-	Setting: Hardware is cheap. RAM is abundant.
-	: The price difference between 8-bit and 32-bit processors is dwindling.
-	: This means we can use Linux and Python for embedded systems that used to
-	: require the use of a microcontroller and C.
-	: PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
-	: RAM (Raspberry Pi slide)
+	Setting: Hardware is cheap.
+	: The price difference between 8-bit and 32-bit processors is small and
+	: dwindling. (Raspberry Pi slide)
+	:
 	: There are a wide variety of embedded systems, with great differences
 	: between them. To try and cover this range, I'm going to use 3 examples.
 	: 3 embedded system examples
 	: 	kiosk, like an ATM
 	: 	home router
 	: 	thermostat
-	Protagonist: My belief is that programmers develop faster with Linux and
-	Python than a real-time operating system and C.
-	: better tools, better documentation (the source!)
-	: (Use the source, Luke)
-	: VxWorks stack trace, 
-	: cost dev tools, licenses
-	Imbalance: Linux distributions are not designed for embedded systems.
+	Protagonist: My premise is that programmers develop faster with Linux and
+	Python than a micro-controller operating systems and C.
+	: better tools, better documentation (the source!), and a higher-level
+	: language
+	Imbalance: The problem is, Linux distributions are not designed for embedded systems.
 	Balance: Develop in Python and create flexible software.
 	Solution: Use what you can from the distribution and use Python to quickly build the rest.
 Act 2: Develop the action - How and Why?
@@ -32,15 +28,22 @@ Act 2: Develop the action - How and Why?
 			: Storage: 15GB
 			: 	There's a screen, an x86 processor, and a pointing device.
 			: Some differences:
+			: 	only one application
+			: 	no administrator - all configuration must be automatic
 			: 	no user login
-			: 	no administrator or configuration
-			: 	no backups
 			Using Ubuntu can be the quickest path to a working kiosk.
+			: Ubuntu has great support for Linux desktops.
 			: Chrome and Firefox have kiosk modes.
+			: You can write your user interface software for a browser, or you
+			: have a wide choice of toolkits like Qt and GTK.
 			Why not Fedora?
-			:   Debian packages are more granular, and the Debian
-			:   project has packaged much more software than Fedora, so it is more
-			:   likely that the software you want is already packaged.
+			: Ubuntu is based on Debian and the Debian project has packaged a
+			: lot more software than Fedora. So it is more likely that the
+			: software you want is already packaged.
+			:
+			: Further, the packages are more granular, so if you are tight on
+			: space, it is much easier to slim down your storage requirements,
+			: by just removing packages.
 		For a home router, choose Debian.
 			Debian supports more processors than Ubuntu
 			: CPUs amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
@@ -93,11 +96,14 @@ Act 2: Develop the action - How and Why?
 			:    Conclusion: Avoid time, if possible.
 			:    Huge number of time zones.
 			:    Don't do timezones. Wristwatches don't.
-		Root is okay.
-			: **** need why or why not
-			: sudo is okay too. write privileged programs in python
 		Don't manage NetworkManager.
 			: Configure networks like servers, not clients.	
+		Root is okay.
+			: In the desktop world, in the website world, you don't run your
+			: software as root.
+			:
+			: **** need why or why not
+			: sudo is okay too. write privileged programs in python
 	Write portable code.
 		: We talked about Linux. Now we can talk about Python.
 		:
@@ -191,9 +197,7 @@ Act 2: Develop the action - How and Why?
 			: and the model-specific code. Are they stable? By that, I mean,
 			: do they remain the same over time? Or do we need to
 			: change them every time we add a new model?
-
 		Question for the audience: Who likes frameworks? Who prefers libraries?
-
 		Best
 			There is a solution. Turn the call-graph inside out.
 			: Differences are often in setup and teardown. So let the
