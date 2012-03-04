@@ -1,36 +1,74 @@
 
-Designing Embedded Linux Systems with Python by Mark Kohler
+Designing Embedded Linux Systems for Python Programmers
+by Mark Kohler
 
 Act 1: Set up the Story
 	Setting: Hardware is cheap. RAM is abundant.
+	: The price difference between 8-bit and 32-bit processors is dwindling.
+	: This means we can use Linux and Python for embedded systems that used to
+	: require the use of a microcontroller and C.
 	: PIC32 (mips 4K, under $10) (slide of DigiKey pricelist)
 	: RAM (Raspberry Pi slide)
-	Protagonist: Programmers develop faster with Linux and Python than VxWorks and C.
+	: There are a wide variety of embedded systems, with great differences
+	: between them. To try and cover this range, I'm going to use 3 examples.
+	: 3 embedded system examples
+	: 	kiosk, like an ATM
+	: 	home router
+	: 	thermostat
+	Protagonist: My belief is that programmers develop faster with Linux and
+	Python than a real-time operating system and C.
+	: better tools, better documentation (the source!)
+	: (Use the source, Luke)
 	: VxWorks stack trace, 
 	: cost dev tools, licenses
 	Imbalance: Linux distributions are not designed for embedded systems.
 	Balance: Develop in Python and create flexible software.
-	Solution: Use what you can and use Python to quickly build the rest.
+	Solution: Use what you can from the distribution and use Python to quickly build the rest.
 Act 2: Develop the action - How and Why?
 	Choose the right distribution.
-		Choose Ubuntu for a kiosk.
-		: CPU: amd64, i386, arm
-		: Storage: 15GB
-		: Packages more complete than Fedora / RedHat
-		: Chrome and Firefox have kiosk modes.
-		: Using Ubuntu can be the quickest path to a working kiosk.
-		: on ragged edge for support libraries
-		Choose Debian for an appliance.
-		: CPU: amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
-		: Storage: 1GB
-		: some support for cross-compilation with emdebian project.
+		For a kiosk, choose Ubuntu.
+			A kiosk is the almost most like a desktop.
+			: CPU: amd64, i386, arm
+			: Storage: 15GB
+			: 	There's a screen, an x86 processor, and a pointing device.
+			: Some differences:
+			: 	no user login
+			: 	no administrator or configuration
+			: 	no backups
+			Using Ubuntu can be the quickest path to a working kiosk.
+			: Chrome and Firefox have kiosk modes.
+			Why not Fedora?
+			:   Debian packages are more granular, and the Debian
+			:   project has packaged much more software than Fedora, so it is more
+			:   likely that the software you want is already packaged.
+		For a home router, choose Debian.
+			Debian supports more processors than Ubuntu
+			: CPUs amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
+			Debian requires less storage.
+			: Storage: 1GB
+			Debian has some support for cross-compilation with emdebian project.
+			Why not Ubuntu?
+			: Ubuntu is always shipping core components (boot support,
+			: filesystems, libraries) that are on the ragged edge, usually to
+			: support something new for desktop users. The best example of this
+			: is the effort that has gone into supporting 3D desktop features.
+			:	
+			:  All of the fancy desktop features from Ubuntu aren't going to
+			:  help, might get in the way, and reduce stability.
 		For a thermostat, start with BusyBox and Linux from Scratch.
-		: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
-		: Packages more granular than Fedora / RedHat
-		: cross-compilation, gcc toolchain, unusual platforms, custom kernels
-		: You are doing platform development.
+			: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
+			What is BusyBox?
+			: BusyBox is a very small user-space implementation for Linux
+			What is Linux from Scratch?
+			: Linxu from Scratch and its companion Cross Linux from Scratch
+			: are book-based distributions.
+			Issues in this environment
+			: You are doing platform development.
+			: cross-compilation, gcc toolchain, unusual platforms, custom kernels
 	Eliminate desktop assumptions.
-		: For Ubuntu and Debian.
+		: For Ubuntu and Debian. 
+		: For BusyBox, this has either been done for you, or you've created
+		: everything yourself.
 		Handle upgrades automatically.		
 			: Upgrading software should control the process.
 			Simplest approach Using filesystem images or tarballs
@@ -61,32 +99,82 @@ Act 2: Develop the action - How and Why?
 		Don't manage NetworkManager.
 			: Configure networks like servers, not clients.	
 	Write portable code.
-		What is portable code?
-		: There is more than one type of portability.
+		: We talked about Linux. Now we can talk about Python.
+		: I want everyone to write portable code in Python.
+		What is portable code? Isn't Python portable?
+		: I don't have an endian macros in my Python code.
+		: I don't have near and far pointers.
 		:
-		: 
-			luxury edition
+		: Yes, Python is portable across *processors*.
+		: There is more than one type of portability.
 		Types of portability
-			: use the car analogy.
-			CPU architecture
-			hardware architecture
-			product varieties
-		: the problem: See ifdefs considered harmful
+		: The kind of portability I'm talking about is using one source base
+		: across a range of products, which is very common in embedded
+		: systems.
+		:
+		: You need to support a common core of functionality, but with
+		: somewhat varying features, and varying hardware platforms.
+		:
+		: Hardware: Different sensors, different network interfaces, etc.
+		: On the feature side, marketing says there should be a a basic model, and a
+		: luxury or professional model.
+		The naive approach	
+			: Python has support for this. It is called the if statement. You
+			: just write your code and when you get to a difference between
+			: the models you write:
+			; if PRODUCT_A do this
+			; elif PRODUCT_B do that
+			; elif PRODUCT_C do something else
+			So what's the problem?
+				: The problem is the number of code paths increases with each product.	
+				:
+				: And when you're working on the software, regardless of which
+				: product you are working on, you see the complexity of the sum
+				: total of all the products.
+				:
+				: Another problem is that the differences between products are
+				: hidden in the leaves of your code.
+				:
+				: See #ifdef Considered Harmful by Henry Spencer
+				:
+				Is a program written this way modular? Let's come back to that.
+		Stop and talk about trunk vs. leaves.
+			Separate common and model-specific code.
+			: Use abstraction. Draw a circle around the leaves.
+			: This is Better
+			: But let's ask again, is this program modular?
+			:
+			: We have these leaves of code that contain 
+			:
+			: We contained the complexity, but we're not reducing it:
+			: 	The common parts of the software depends on these leaves that
+			: 	keep getting more and more complex.
+			:
+			: In 1972, David Parnas wrote a paper called "On the Criteria To
+			: Be Used in Decomposing Systems into Modules". And he said:
+			:
+			: "We propose instead that one begins with a list of difficult
+			: design decisions or design decisions which are likely to change.
+			: Each module is then designed to hide such a decision from the
+			: others."
+			:
+			: We want to *hide* the differences, the parts of the program that
+			: have changed before, and thus are likely to change again, from
+			: the other parts of the software.
+
+		Question for the audience: Who likes frameworks? Who prefers libraries?
+
+		Best
+			Don't depend on details. Depend on commonalities.
+			: Ports should depend on common code 
+			: Don't have lots of conditionals in the leaves of your code.
+			: Keep the leaves simple.
+			: The obvious thing
+			Turn the call-graph inside out.
+
+			Better for testing.
 		Inheritance.
-		Use abstraction.
 		Use composition instead of inheritance
-		Fisrt separate common and model-specific code.
-		Who likes frameworks?
-		Who prefers libraries?
-		similar to switching from framework to library.
-		Don't depend on details. Depend on commonalities.
-		: Ports should depend on common code 
-		: Don't have lots of conditionals in the leaves of your code.
-		: Keep the leaves simple.
-		: The obvious thing
-		: if PRODUCT do this
-		: elif PRODUCT2 do that
-		: elif PRODUCT2B do that
 		Use external components
 			: subprocess
 			: swig
