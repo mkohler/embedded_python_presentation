@@ -108,17 +108,24 @@ Act 2: Develop the action - How and Why?
 			General Principle: Upgrading software should control the process.
 		Be wary of code related to dates and times.
 			This is an area notorious for bugs.
-				This year, Microsoft's cloud computing platform had an unusal amount of downtime on...Feb 29.
-				Y2K.
-				GPS time vs UTC time
-				: GPS time does not use leap seconds - different by 15 seconds
-				Linux: elapsed time vs. clock time
-				: Linux does not support elapsed time. Applications get the
-				: system time and do their own calculations.
-				:
-				: T2 - T1 does not equal elapsed time
-				:
-				: settimeofday
+			: This year, Microsoft's cloud computing platform had an unusal
+			: amount of downtime on...Feb 29.
+			Avoid time zones, if possibles. Wristwatches do.
+			: There are a huge number of time zones, and they are
+			: constantly changing.
+			: Time zone rules are political artifacts and constantly changing.
+			:
+			: Avoid, if possible. My wristwatch doesn't know what time
+			: zone it is in.
+			GPS time vs UTC time
+			: GPS time does not use leap seconds - different by 15 seconds
+			Linux: elapsed time vs. clock time
+			: Linux does not support elapsed time. Applications get the
+			: system time and do their own calculations.
+			:
+			: T2 - T1 does not equal elapsed time
+			:
+			: settimeofday
 				Linux: seconds are not constant
 				: Under half a second
 				: See adjtimex(2)
@@ -128,22 +135,32 @@ Act 2: Develop the action - How and Why?
 				:
 				: Affects timeouts
 				: cron jobs
-			
-			: Time
-			: Avoid time zones, if possibles. Wristwatches do.
-			: setting the time
-			: time is a bitch
-			: story: Ubuntu automatically sets the time when you plug
-			: in a network cable.
-			:    CMOS time was not getting set.
-			:    result: huge time adjustments whenever you plugged in a
-			:    network cable.
-			:    Conclusion: Avoid time, if possible.
-			:    Huge number of time zones.
-			:    Don't do timezones. Wristwatches don't.
+				
+				: setting the time
+				: story: Ubuntu automatically sets the time when you plug
+				: in a network cable.
+				:    CMOS time was not getting set.
+				:    result: huge time adjustments whenever you plugged in a
+				:    network cable.
+				:    Conclusion: Avoid time, if possible.
 		Don't manage NetworkManager.
-			: Configure networks like servers, not clients.	
+			: Desktop systems use NetworkManager to  manage a set of network
+			: interfaces, choosing the best one as connectivity changes over
+			: time.
+			:
+			: This approach may work if your embedded system roams also roams
+			: across networks, e.g. phones, ebook readers.
+			:
+			: However, many embedded systems act more like servers than
+			: clients, and it is not appropriate in those circumstances to be
+			: bringing up and down network interfaces every time a change in
+			: connectivity happens.
+			:
 		sudo is the new setuid
+			: Right or wrong, if you are using Ubuntu or Debian, you have
+			: inherited, the Linux desktop security model.
+			:
+			: Your softare is eventually going to change privileged
 			: In the desktop world, in the website world, you don't run your
 			: software as root.
 			:
