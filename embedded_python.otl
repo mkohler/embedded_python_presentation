@@ -7,6 +7,8 @@ Act 1: Set up the Story
 	: The price difference between 8-bit and 32-bit processors is small and
 	: dwindling. (Raspberry Pi slide)
 	:
+	: That means there are more and more places we can use Python.
+	:
 	: There are a wide variety of embedded systems, with great differences
 	: between them. To try and cover this range, I'm going to use 3 examples.
 	: 3 embedded system examples
@@ -46,68 +48,93 @@ Act 2: Develop the action - How and Why?
 			: by just removing packages.
 		For a home router, choose Debian.
 			Debian supports more processors than Ubuntu
-			: CPUs amd64, armel, i386, ia64o,  mips, mipsel, powerpc, s390, sparc
+			: CPUs amd64, armel, i386, ia64, mips, mipsel, powerpc, s390, sparc
 			Debian requires less storage.
 			: Storage: 1GB
 			Debian has some support for cross-compilation with emdebian project.
 			Why not Ubuntu?
-			: Ubuntu is always shipping core components (boot support,
-			: filesystems, libraries) that are on the ragged edge, usually to
-			: support something new for desktop users. The best example of this
-			: is the effort that has gone into supporting 3D desktop features.
+			: Ubuntu is always shipping core components (kernel, boot and
+			: early userspace, filesystems, C libraries) that are on the
+			: ragged edge, usually to support something new for desktop users.
+			: The best example of this is the effort that has gone into
+			: supporting compositing window managers.
 			:	
-			:  All of the fancy desktop features from Ubuntu aren't going to
-			:  help, might get in the way, and reduce stability.
+			: All of the fancy desktop features from Ubuntu aren't going to
+			: help, might get in the way, and reduce stability.
 		For a thermostat, start with BusyBox and Linux from Scratch.
+			: Priorities are very low cost, very low resources.
+			: You might need to use a less common processor and you definitely
+			: have much less storage.
 			: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
 			What is BusyBox?
 			: BusyBox is a very small user-space implementation for Linux
+			:
+			: People often use it with a scaled-down C library.
+			:
 			What is Linux from Scratch?
 			: Linxu from Scratch and its companion Cross Linux from Scratch
 			: are book-based distributions that explain issues like:
-			: 	creating and use a cross-compilation toolchain
+			: 	creating and use a cross-compilation gcc toolchain
 			: 	building custom kernels
 			:	using unusual boot loaders
 			:	customizing the boot process
 	Eliminate desktop assumptions
-		: For Ubuntu and Debian. 
 		: For BusyBox, this has either been done for you, or you've created
 		: everything yourself.
+		:
+		: Find these assumptions, and code around them in Python.
 		Handle upgrades automatically.
-			Simplest approach: script and filesystem image
+			Simplest approach: upgrades are filesystem images
 			: Ideal for small systems that run out of RAM.
 			: step 1 - running system downloads a script
 			: step 2 - script downloads a filesytem image and writes it to
 			: secondary storage
 			: step 3 - reboot
-			: details - migrate settings forward, configuration partition
+			: step 4 - new image is loaded from secondary storage to RAM and
+			: your upgrade is done.
+			: details - migrate local settings forward, configuration partition
 			Ping-Pong
 			: for systems that run off of secondary storage
 			: You have two partitions that each contain a complete system.
-			: boot from 1 partition, upgrade the other, toggle the bootloader.
+			: boot from 1 partition, upgrade the other, toggle the bootloader,
+			: so that on the next boot, you boot the upgraded partition.
+			:
+			: This is called Ping-pong, because every time you upgrade, the
+			: boot loader toggles which partition is booted.
+			:
 			: downsides
 			: 	need enough space for two system images.
 			: 	need to be able to download a complete system image
-			Using apt
-			: Most complicated approach because of inherent assumptions
-			: 	- If an package doesn't know what to do, it can appeal to a
-			: 	human for help.
-			: 	- The human administrator is responsible for configuration, and only with
-			: 	the administrator's approval can packages change the
-			: 	configuration.
-			: 	
-			: python-apt supports custom interfaces.
-			: Debian doesn't support downgrades
-			: /etc is a problem.
-			: Watch out for debconf questions.
+			Using Debian's package manager, apt
+			: Most complicated approach because of inherent assumptions of apt
 			:
-			: Solutions:
+			: 	If an package doesn't know what to do, it can appeal to a
+			: 	human for help.
+			:
+			: 	The human administrator is responsible for configuration,
+			: 	and only with the administrator's approval can packages change
+			: 	the configuration.
+			:
+			: Advantage:
+			: 	Only download the packages that need upgrading.
+			:
+			: Disadvantages:
+			: 	Packaging scripts may call out to the user interface to ask questions
+			: 	Changing files in /etc is a problem.
+			: 	Debian packages don't support downgrades
+			: 	Will need careful testing.
+			:
+			: Good news
 			: 	Automate using python-apt library.
-			: 	Careful testing.
-			: 	Pre-seeding with debconf.
+			: 	Pre-answer questions that you know packaging scripts will ask.
 			General Principle: Upgrading software should control the process.
+			: Difficult to foresee which software you will need to upgrade.
+			:
+			: For that reason, make sure that the software you are upgrading
+			: *to* controls the upgrade process.
 		Be wary of code related to dates and times.
-			This is an area notorious for bugs.
+			This is an area notorious for bugs but it is especially true when
+			you adapting desktop code to an embedded system.
 			: This year, Microsoft's cloud computing platform had an unusal
 			: amount of downtime on...Feb 29.
 			Avoid time zones, if possible. Wristwatches do.
@@ -119,6 +146,10 @@ Act 2: Develop the action - How and Why?
 			: Linux does not direct support for elapsed time. Applications get the
 			: system time and do their own calculations. The problem is, there
 			: is a system called settimeofday. As a result:
+			:
+			: Applications expect to be able to do
+			: 	t1 = gettimeofday()
+			:   t2 = gettimeofday()
 			:
 			: T2 - T1 does not equal elapsed time
 			:
