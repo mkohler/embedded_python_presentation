@@ -18,8 +18,8 @@ Act 1: Set up the Story
 	: better tools, better documentation (the source!), and a higher-level
 	: language
 	Imbalance: The problem is, Linux distributions are not designed for embedded systems.
-	Balance: Develop in Python and create flexible software.
-	Solution: Use what you can from the distribution and use Python to quickly build the rest.
+	Balance: We want to develop in Python and create flexible software quickly.
+	Solution: Use what you can from the distribution and use Python to build the rest.
 Act 2: Develop the action - How and Why?
 	Choose the right distribution.
 		For a kiosk, choose Ubuntu.
@@ -64,26 +64,71 @@ Act 2: Develop the action - How and Why?
 			: BusyBox is a very small user-space implementation for Linux
 			What is Linux from Scratch?
 			: Linxu from Scratch and its companion Cross Linux from Scratch
-			: are book-based distributions.
-			Issues in this environment
-			: You are doing platform development.
-			: cross-compilation, gcc toolchain, unusual platforms, custom kernels
-	Eliminate desktop assumptions.
+			: are book-based distributions that explain issues like:
+			: 	creating and use a cross-compilation toolchain
+			: 	building custom kernels
+			:	using unusual boot loaders
+			:	customizing the boot process
+	Eliminate desktop assumptions
 		: For Ubuntu and Debian. 
 		: For BusyBox, this has either been done for you, or you've created
 		: everything yourself.
 		Handle upgrades automatically.		
-			: Upgrading software should control the process.
-			Simplest approach Using filesystem images or tarballs
+			Simplest approach: script and filesystem image
 			: Ideal for small systems that run out of RAM.
-			: Ping-pong approach can also work.
-			: Problem for large systems.
+			: step 1 - running system downloads a script
+			: step 2 - script downloads a filesytem image and writes it to
+			: secondary storage
+			: step 3 - reboot
+			: details - migrate settings forward, configuration partition
+			Ping-Pong
+			: for systems that run off of secondary storage
+			: You have two partitions that each contain a complete system.
+			: boot from 1 partition, upgrade the other, toggle the bootloader.
+			: downsides
+			: 	need enough space for two system images.
+			: 	need to be able to download a complete system image
 			Using apt
+			: Most complicated approach because of inherent assumptions
+			: 	- If an package doesn't know what to do, it can appeal to a
+			: 	human for help.
+			: 	- The human administrator is responsible for configuration, and only with
+			: 	the administrator's approval can packages change the
+			: 	configuration.
+			: 	
 			: python-apt supports custom interfaces.
 			: Debian doesn't support downgrades
 			: /etc is a problem.
 			: Watch out for debconf questions.
-		Be wary of time-related code.
+			:
+			: Solutions:
+			: 	Automate using python-apt library.
+			: 	Careful testing.
+			: 	Pre-seeding with debconf.
+			General Principle: Upgrading software should control the process.
+		Be wary of code related to dates and times.
+			This is an area notorious for bugs.
+				This year, Microsoft's cloud computing platform had an unusal amount of downtime on...Feb 29.
+				Y2K.
+				GPS time vs UTC time
+				: GPS time does not use leap seconds - different by 15 seconds
+				Linux: elapsed time vs. clock time
+				: Linux does not support elapsed time. Applications get the
+				: system time and do their own calculations.
+				:
+				: T2 - T1 does not equal elapsed time
+				:
+				: settimeofday
+				Linux: seconds are not constant
+				: Under half a second
+				: See adjtimex(2)
+				Linux: time is not monotonic
+				: For more than a half a second, system time can jump forward
+				: or back
+				:
+				: Affects timeouts
+				: cron jobs
+			
 			: Time
 			: Avoid time zones, if possibles. Wristwatches do.
 			: setting the time
@@ -98,7 +143,7 @@ Act 2: Develop the action - How and Why?
 			:    Don't do timezones. Wristwatches don't.
 		Don't manage NetworkManager.
 			: Configure networks like servers, not clients.	
-		Root is okay.
+		sudo is the new setuid
 			: In the desktop world, in the website world, you don't run your
 			: software as root.
 			:
@@ -212,7 +257,7 @@ Act 2: Develop the action - How and Why?
 			Better for testing.
 				Differences between hardware are easy to see.
 Act 3: Frame the Resolution
-	Crisis: Complexity overload
-	Solution: Plan carefully.
-	Climax:
-	Resolution: Create embedded systems. Use Linux. Use Python.
+	Crisis: Developing embedded systems with C is slow.
+	Solution: Use Linux where you can, and use Python for the rest.
+	Climax: Writer better embedded systems faster.
+	Resolution: Questions?
