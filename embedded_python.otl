@@ -242,13 +242,15 @@ Act 2: Develop the action - How and Why?
 			: Hardware: Different sensors, different network interfaces, etc.
 			: On the feature side, marketing says there should be a a basic model, and a
 			: luxury or professional model.
-		Use the if statement
+		if considered harmful
 			: Python has support for this. It is called the if statement. You
 			: just write your code and when you get to a difference between
 			: the models you write:
 			:
-			: if PRODUCT_A do this
-			: elif PRODUCT_B do that
+			: if model == PRODUCT_A:
+			: 	do_this()
+			: elif model == PRODUCT_B:
+			: 	do_that()
 			: elif PRODUCT_C do something else
 			:
 			: That works. So what's the problem? Why I am talking about this?
