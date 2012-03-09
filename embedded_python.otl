@@ -3,6 +3,7 @@ Designing Embedded Linux Systems for Python Programmers
 by Mark Kohler
 
 Act 1: Set up the Story
+	: The story so far
 	Setting: Hardware is cheap.
 	: The price difference between 8-bit and 32-bit processors is small and
 	: dwindling. (Raspberry Pi slide)
@@ -11,10 +12,13 @@ Act 1: Set up the Story
 	:
 	: There are a wide variety of embedded systems, with great differences
 	: between them. To try and cover this range, I'm going to use 3 examples.
-	: 3 embedded system examples
+	: 3 embedded system examples Imagine:
 	: 	kiosk, like an ATM
 	: 	home router
 	: 	thermostat
+	:
+	: 	Those are the three example embedded systems I will use throughout
+	: 	this talk.
 	Protagonist: My premise is that programmers develop faster with Linux and
 	Python than a micro-controller operating systems and C.
 	: better tools, better documentation (the source!), and a higher-level
@@ -33,58 +37,68 @@ Act 2: Develop the action - How and Why?
 			: 	only one application
 			: 	no administrator - all configuration must be automatic
 			: 	no user login
-			Using Ubuntu can be the quickest path to a working kiosk.
+			Ubuntu is the quickest path to a working kiosk.
 			: Ubuntu has great support for Linux desktops.
 			: Chrome and Firefox have kiosk modes.
 			: You can write your user interface software for a browser, or you
-			: have a wide choice of toolkits like Qt and GTK.
+			: have a wide choice of desktop toolkits like Qt and GTK.
 			Why not Fedora?
 			: Ubuntu is based on Debian and the Debian project has packaged a
 			: lot more software than Fedora. So it is more likely that the
 			: software you want is already packaged.
 			:
-			: Further, the packages are more granular, so if you are tight on
+			: Further, Debian packages are more granular, so if you are tight on
 			: space, it is much easier to slim down your storage requirements,
 			: by just removing packages.
-		For a home router, choose Debian.
+		Example 2: For a home router, choose Debian.
 			Debian supports more processors than Ubuntu
 			: CPUs amd64, armel, i386, ia64, mips, mipsel, powerpc, s390, sparc
 			Debian requires less storage.
 			: Storage: 1GB
-			Debian has some support for cross-compilation with emdebian project.
+			Debian supports cross-compilation with the Emdebian project.
+			:
 			Why not Ubuntu?
 			: Ubuntu is always shipping core components (kernel, boot and
 			: early userspace, filesystems, C libraries) that are on the
-			: ragged edge, usually to support something new for desktop users.
+			: ragged edge, usually to support something shiny for desktop users.
+			:
 			: The best example of this is the effort that has gone into
 			: supporting compositing window managers.
-			:	
+			:
 			: All of the fancy desktop features from Ubuntu aren't going to
 			: help, might get in the way, and reduce stability.
 		For a thermostat, start with BusyBox and Linux from Scratch.
-			: Priorities are very low cost, very low resources.
-			: You might need to use a less common processor and you definitely
-			: have much less storage.
-			: CPU: http://en.wikipedia.org/wiki/List_of_Linux_supported_architectures
+			: For this class of device, your design must be very low cost,
+			: very low resources.  You might need to use a less common
+			: processor and you definitely have much less storage.
+			:
+			: In this environment, you have fewer resources, and you are
+			: likely to do a lot more customization of system code.
+			:
+			: BusyBox and Linux from Scratch are a great way to start.
+		
 			What is BusyBox?
 			: BusyBox is a very small user-space implementation for Linux
 			:
-			: People often use it with a scaled-down C library.
+			: People often use it with a scaled-down C library for very small
+			: systems.
 			:
 			What is Linux from Scratch?
-			: Linxu from Scratch and its companion Cross Linux from Scratch
+			: Linux from Scratch and its companion Cross Linux from Scratch
 			: are book-based distributions that explain issues like:
 			: 	creating and use a cross-compilation gcc toolchain
 			: 	building custom kernels
 			:	using unusual boot loaders
 			:	customizing the boot process
 	Eliminate desktop assumptions
+		: After you have chosen your distribution...
+	
 		: For BusyBox, this has either been done for you, or you've created
 		: everything yourself.
 		:
-		: Find these assumptions, and code around them in Python.
+		: For the otheris Find these assumptions, and code around them in Python.
 		Handle upgrades automatically.
-			Simplest approach: upgrades are filesystem images
+			Simplest approach: upgrades are distributed as filesystem images
 			: Ideal for small systems that run out of RAM.
 			: step 1 - running system downloads a script
 			: step 2 - script downloads a filesytem image and writes it to
@@ -106,7 +120,7 @@ Act 2: Develop the action - How and Why?
 			: 	need enough space for two system images.
 			: 	need to be able to download a complete system image
 			Using Debian's package manager, apt
-			: Most complicated approach because of inherent assumptions of apt
+			: Most complicated approach because of inherent desktop assumptions of apt
 			:
 			: 	If an package doesn't know what to do, it can appeal to a
 			: 	human for help.
@@ -132,6 +146,8 @@ Act 2: Develop the action - How and Why?
 			:
 			: For that reason, make sure that the software you are upgrading
 			: *to* controls the upgrade process.
+		Add a review of where we are. (11 minutes in)
+		
 		Be wary of code related to dates and times.
 			This is an area notorious for bugs but it is especially true when
 			you adapting desktop code to an embedded system.
@@ -141,7 +157,7 @@ Act 2: Develop the action - How and Why?
 			: There are a huge number of time zones, and they are
 			: constantly changing.
 			GPS time vs UTC time
-			: GPS time does not use leap seconds - different by 15 seconds
+			: GPS time does not use leap seconds - currently different by 15 seconds
 			Linux: elapsed time vs. clock time
 			: Linux does not direct support for elapsed time. Applications get the
 			: system time and do their own calculations. The problem is, there
@@ -153,14 +169,24 @@ Act 2: Develop the action - How and Why?
 			:
 			: T2 - T1 does not equal elapsed time
 			:
+			: Depending on how how the time is adjusted by, different
+			: assumptions break.
+			:
 			Seconds are not constant
 			: For adjustments under half a second, time is slewed and seconds are made longer
 			: or shorter. See adjtimex(2)
 			Time is not monotonically increasing.
 			: For adjustment of more than a half a second, system time
 			: immediately jumps forward or back. This affects timeouts and
-			: cron jobs.
+			: cron jobs, even filesystem checks on the next boot.
+			:
+			: Time can be quite off depending on whether you have been taking
+			: good care of the hwclock. On many Linux systems, the hw clock is
+			: only set on shutdown. If you shutdown uncleanly, the clock
+			: doesn't get set, and you will have a big time jump in your
+			: future.
 			Avoid time changes except at startup and shutdown.
+		15 minutes in
 		Don't manage NetworkManager.
 			: Desktop systems use NetworkManager to control a set of network
 			: interfaces, choosing the best one as connectivity changes over
@@ -196,6 +222,8 @@ Act 2: Develop the action - How and Why?
 			: And I want to talk about a particular aspect of program design that
 			: is especially important to embedded systems software.
 			:
+			: ISn't Python portable?
+			:
 			: I want everyone to write portable code in Python.
 			: I've never seen endian macros in Python code.
 			: I haven't seen near and far pointers.
@@ -223,8 +251,10 @@ Act 2: Develop the action - How and Why?
 			: elif PRODUCT_B do that
 			: elif PRODUCT_C do something else
 			:
-			: That works. So what's the problem?
-			: The problem is the number of code paths increases with each product.
+			: That works. So what's the problem? Why I am talking about this?
+			:
+			: The problem with this approach is that the number of code paths
+			: increases with each product.
 			:
 			: The complexity increases.
 			:
@@ -241,6 +271,8 @@ Act 2: Develop the action - How and Why?
 			: code. The leaves are code which don't call other code you've
 			: written. They use libraries or system calls to control hardware.
 			:
+			: NEEDS TRANSITION
+			:
 			: If any of you have programmed in C, C has two different
 			: kinds of if statements: the kind that evaluate at compile-time
 			: and the kind that evaluate at run-time.
@@ -254,6 +286,8 @@ Act 2: Develop the action - How and Why?
 			:
 			: We'd really like to be able to work on the core code, without
 			: seeing the complexity of all of the product varieties.
+			:
+			: TRANSITION
 			:
 			: I can use abstraction. Draw a circle around the leaves.
 			: This is Better
@@ -276,7 +310,7 @@ Act 2: Develop the action - How and Why?
 			: In our program, what are we hiding?
 			:
 			: We are hiding the model-specific code from the core code, and
-			: that's code. But the model-specific code is all mixed together.
+			: that's good. But the model-specific code is all mixed together.
 			:
 			: We want to *hide* the differences, the parts of the program that
 			: have changed before, and thus are likely to change again, from
