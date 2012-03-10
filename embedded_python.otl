@@ -352,13 +352,4 @@ Act 3: Frame the Resolution
 python modules, cmd, xml.sax
 GUI event loops
 
-Differences are often in setup and teardown. So let the model-specific code call the common code.
-                                                            
-Don't have lots of conditionals in the leaves of your code.
-
-Keep the leaves simple.
-
-Details of strange hardware are hidden.
-
-
 
