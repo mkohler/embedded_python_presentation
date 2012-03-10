@@ -346,3 +346,20 @@ Act 3: Frame the Resolution
 	Use Linux where you can, and use Python for the rest.
 	Write better embedded systems faster.
 	Questions?
+
+
+
+But let's ask again, is this program modular?
+                                                              
+We contained the complexity, but we're not reducing it. The common parts of
+the software depends on these leaves that keep getting more and more complex.
+
+Another problem is that the differences between products are hidden in the
+leaves of your code.
+
+
+python modules, cmd, xml.sax
+GUI event loops
+
+
+
