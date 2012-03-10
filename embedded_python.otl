@@ -361,5 +361,11 @@ leaves of your code.
 python modules, cmd, xml.sax
 GUI event loops
 
+When you do you have the core call the details
 
+If the core code depends 
+
+
+The problem with this approach is that the number of code paths increases with
+each product, and with each variety of hardware.
 
